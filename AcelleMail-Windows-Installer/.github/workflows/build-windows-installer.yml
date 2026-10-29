@@ -25,6 +25,12 @@ jobs:
         run: |
           Set-Location $env:PROJECT_ROOT
           ./scripts/Prepare-WindowsRuntime.ps1
+      - name: Reassemble uploaded payload chunks
+        shell: pwsh
+        run: |
+          Set-Location $env:PROJECT_ROOT
+          $parts = Join-Path $env:PROJECT_ROOT 'payload\\parts'
+          if (Test-Path $parts) { ./scripts/Assemble-AcelleMailPayload.ps1 }
       - name: Extract application payload
         shell: pwsh
         run: |
