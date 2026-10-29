@@ -11,9 +11,14 @@ try {
   if ($PrepareRuntime) { & (Join-Path $root 'scripts\Prepare-WindowsRuntime.ps1') }
   $payloadZip = Join-Path $root 'payload\AcelleMail.zip'
   $partsDir = Join-Path $root 'payload\parts'
-  if (-not (Test-Path $payloadZip) -and (Test-Path $partsDir)) {
-    $assembler = Join-Path $root 'scripts\Assemble-AcelleMailPayload.ps1'
-    if (Test-Path $assembler) { & $assembler }
+  $payloadRoot = Join-Path $root 'payload'
+  $assembler = Join-Path $root 'scripts\Assemble-AcelleMailPayload.ps1'
+  if (-not (Test-Path $payloadZip) -and (Test-Path $assembler)) {
+    if ((Test-Path $partsDir) -and (Get-ChildItem -LiteralPath $partsDir -File -Filter 'AcelleMail.part*' -ErrorAction SilentlyContinue)) {
+      & $assembler -PartsDirectory $partsDir
+    } elseif (Get-ChildItem -LiteralPath $payloadRoot -File -Filter 'AcelleMail.part*' -ErrorAction SilentlyContinue) {
+      & $assembler -PartsDirectory $payloadRoot
+    }
   }
   $appDir = Join-Path $root 'staging\app'
   $php = Join-Path $root 'staging\runtime\php\php.exe'
