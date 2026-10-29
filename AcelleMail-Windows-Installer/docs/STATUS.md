@@ -8,13 +8,13 @@
 - `scripts/Build-WindowsInstaller.ps1` — سكربت التحقق من المتطلبات وبناء المثبت.
 - `src/AcelleMailLauncher.ps1` — مشغّل التطبيق المحلي.
 - `src/Stop-AcelleMail.ps1` — سكربت إيقاف عمليات هذا التثبيت.
-- `.github/workflows/build-windows-installer.yml` — سير عمل البناء على Windows.
+- `../.github/workflows/build-acellemail-windows-installer.yml` — سير عمل البناء المسجل في المسار الصحيح لـ GitHub Actions.
 
 ## العائق الحالي
-حزمة التطبيق الأصلية لم تُرفع إلى المستودع بعد. أُضيف الآن سكربت `scripts/Assemble-AcelleMailPayload.ps1` لتجميع الأجزاء التي ترفعها إلى `payload/parts/` والتحقق من أن الناتج ZIP صالح. يقوم سير العمل بإنشاء `payload/AcelleMail.zip` تلقائيًا قبل الاستخراج. لا أستطيع الوصول مباشرةً إلى الملفات الموجودة على جهازك المحلي أو نقلها إلى GitHub من هذه الجلسة؛ لذلك ما زال يلزم رفع جميع ملفات `AcelleMail.part*` يدويًا إلى `payload/parts/` مرة واحدة.
+تم رصد الجزأين `AcelleMail.part01` (20 MiB) و`AcelleMail.part02` (13,955,465 بايت) داخل `payload/` في جذر مجلد المشروع، وليس داخل `payload/parts/`. تم تعديل سير العمل ليقبل الأجزاء في أي من المسارين. أُضيف ملف workflow إلى `.github/workflows/` في جذر المستودع لأن GitHub Actions لا يكتشف ملفات workflow الموجودة داخل مجلد المشروع الفرعي. لم يُثبت بعد أن الجزأين يمثلان الحزمة الأصلية كاملة أو أن ملف ZIP الناتج صالح.
 
 ## الخطوات المتبقية
-1. رفع جميع الأجزاء `AcelleMail.part01`, `AcelleMail.part02`, ... إلى `payload/parts/`؛ سيجمعها سير العمل تلقائيًا في `payload/AcelleMail.zip`.
+1. التحقق من ظهور كل الأجزاء المطلوبة في `payload/`؛ المجلد يعرض حاليًا جزأين فقط.
 2. التحقق من checksum الرسمي لـ PHP وتوافق إصدارات PHP وMariaDB مع Acelle قبل الاعتماد عليها.
 3. تشغيل البناء على Windows x64 مع Inno Setup 6.
 4. إصلاح أي أخطاء بناء تظهر، ثم اختبار تثبيت نظيف على Windows 10/11.
