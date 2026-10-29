@@ -47,11 +47,26 @@ host=127.0.0.1
 "@
     Set-Content -LiteralPath $dbConfig -Value $cfg -Encoding ASCII
   }
-  $dbFiles = Get-ChildItem -LiteralPath $data -Force -ErrorAction SilentlyContinue
-  if (-not $dbFiles -or $dbFiles.Count -eq 0) {
-    Log 'Initializing first-run MariaDB data directory.'
-    & $dbInit "--basedir=$dbRoot" "--datadir=$data" --password= *>> $log
-    if ($LASTEXITCODE -ne 0) { throw 'MariaDB initialization failed. See launcher.log.' }
+  # The Windows mariadb-install-db.exe has a different CLI from the Unix script:
+  # it accepts --datadir/--password, but NOT --basedir.
+  $systemTables = Join-Path $data 'mysql'
+  if (-not (Test-Path $systemTables)) {
+    $existing = @(Get-ChildItem -LiteralPath $data -Force -ErrorAction SilentlyContinue)
+    if ($existing.Count -gt 0) {
+      # Preserve an incomplete prior initialization rather than silently treating it as valid.
+      $quarantine = "$data.incomplete-$(Get-Date -Format yyyyMMddHHmmss)"
+      Move-Item -LiteralPath $data -Destination $quarantine
+      New-Item -ItemType Directory -Force -Path $data | Out-Null
+      Log "Moved incomplete MariaDB data directory to $quarantine."
+    }
+    Log 'Initializing first-run MariaDB data directory with Windows installer syntax.'
+    $initOutput = & $dbInit "--datadir=$data" '--password=' 2>&1
+    $initExitCode = $LASTEXITCODE
+    foreach ($line in $initOutput) { Log ([string]$line) }
+    if ($initExitCode -ne 0 -or -not (Test-Path $systemTables)) {
+      throw "MariaDB initialization failed (exit $initExitCode). See launcher.log and MariaDB data-directory error log."
+    }
+    Log 'MariaDB system tables initialized successfully.'
   }
   $dbProc = Get-Process mysqld -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $mysqld } | Select-Object -First 1
   if (-not $dbProc) {
