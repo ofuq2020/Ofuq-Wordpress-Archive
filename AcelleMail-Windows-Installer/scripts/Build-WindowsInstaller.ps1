@@ -63,8 +63,10 @@ try {
       if ($found) { $InnoSetupCompiler = $found }
     }
     if (-not (Test-Path $InnoSetupCompiler)) { throw "Inno Setup Compiler not found. Checked configured path and standard install locations: $InnoSetupCompiler" }
-    $phpVersion = & $php -v 2>&1 | Select-Object -First 1
-    if ($LASTEXITCODE -ne 0) { throw "Bundled PHP failed: $phpVersion" }
+    $phpOutput = & $php -v 2>&1
+    $phpExitCode = $LASTEXITCODE
+    $phpVersion = ($phpOutput | Select-Object -First 1)
+    if ($phpExitCode -ne 0) { throw "Bundled PHP failed (exit $phpExitCode): $phpVersion" }
     & $InnoSetupCompiler $iss
     if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed: $LASTEXITCODE" }
     $exe = Join-Path $root 'output\AcelleMail-Setup-x64.exe'
