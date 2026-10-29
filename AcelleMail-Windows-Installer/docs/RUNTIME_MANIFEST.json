@@ -1,0 +1,24 @@
+{
+  "application": "Acelle Mail 3.0.21",
+  "framework_detected": "Laravel 5.4.36",
+  "platform": "Windows x64",
+  "php": {
+    "version": "7.4.33",
+    "architecture": "x64",
+    "thread_safety": "NTS",
+    "compiler": "VC15",
+    "status": "candidate; official checksum and runtime compatibility still require verification"
+  },
+  "database": {
+    "product": "MariaDB Server",
+    "version": "10.11.19",
+    "architecture": "x64",
+    "distribution": "Windows portable ZIP",
+    "status": "candidate; archive layout and initialization must be verified"
+  },
+  "build_status": {
+    "runtime_files_present": false,
+    "windows_exe_built": false,
+    "clean_windows_install_tested": false
+  }
+}
