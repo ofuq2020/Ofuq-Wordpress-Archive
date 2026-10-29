@@ -11,10 +11,10 @@
 - `.github/workflows/build-windows-installer.yml` — سير عمل البناء على Windows.
 
 ## العائق الحالي
-حزمة التطبيق الأصلية `AcelleMail_3.0.21_ReviewBuild_v4_EasyInstaller.zip` (34,926,985 بايت) لم تُرفع إلى المستودع بعد. أداة الكتابة المتاحة هنا تنشئ ملفات نصية UTF-8 ولا تتيح نقل ملف ZIP ثنائي بهذا الحجم. لذلك لن ينجح البناء حتى تُضاف الحزمة إلى `payload/`.
+حزمة التطبيق الأصلية لم تُرفع إلى المستودع بعد. أُضيف الآن سكربت `scripts/Assemble-AcelleMailPayload.ps1` لتجميع الأجزاء التي ترفعها إلى `payload/parts/` والتحقق من أن الناتج ZIP صالح. يقوم سير العمل بإنشاء `payload/AcelleMail.zip` تلقائيًا قبل الاستخراج. لا أستطيع الوصول مباشرةً إلى الملفات الموجودة على جهازك المحلي أو نقلها إلى GitHub من هذه الجلسة؛ لذلك ما زال يلزم رفع جميع ملفات `AcelleMail.part*` يدويًا إلى `payload/parts/` مرة واحدة.
 
 ## الخطوات المتبقية
-1. رفع حزمة التطبيق إلى `payload/AcelleMail_3.0.21_ReviewBuild_v4_EasyInstaller.zip`.
+1. رفع جميع الأجزاء `AcelleMail.part01`, `AcelleMail.part02`, ... إلى `payload/parts/`؛ سيجمعها سير العمل تلقائيًا في `payload/AcelleMail.zip`.
 2. التحقق من checksum الرسمي لـ PHP وتوافق إصدارات PHP وMariaDB مع Acelle قبل الاعتماد عليها.
 3. تشغيل البناء على Windows x64 مع Inno Setup 6.
 4. إصلاح أي أخطاء بناء تظهر، ثم اختبار تثبيت نظيف على Windows 10/11.
