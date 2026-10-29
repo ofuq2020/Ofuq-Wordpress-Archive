@@ -9,7 +9,12 @@ $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
 try {
   if ($PrepareRuntime) { & (Join-Path $root 'scripts\Prepare-WindowsRuntime.ps1') }
-  $payloadZip = Join-Path $root 'payload\AcelleMail_3.0.21_ReviewBuild_v4_EasyInstaller.zip'
+  $payloadZip = Join-Path $root 'payload\AcelleMail.zip'
+  $partsDir = Join-Path $root 'payload\parts'
+  if (-not (Test-Path $payloadZip) -and (Test-Path $partsDir)) {
+    $assembler = Join-Path $root 'scripts\Assemble-AcelleMailPayload.ps1'
+    if (Test-Path $assembler) { & $assembler }
+  }
   $appDir = Join-Path $root 'staging\app'
   $php = Join-Path $root 'staging\runtime\php\php.exe'
   $db = Join-Path $root 'staging\runtime\mariadb\bin\mysqld.exe'
