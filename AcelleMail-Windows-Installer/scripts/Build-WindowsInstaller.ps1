@@ -43,12 +43,25 @@ try {
     $missing | ForEach-Object { Write-Host " - $_" }
     throw 'Installer build prerequisites are incomplete. See docs\BUILD_REQUIREMENTS_AR.md.'
   }
-  if (-not (Test-Path $InnoSetupCompiler)) { throw "Inno Setup Compiler not found: $InnoSetupCompiler" }
-  $phpVersion = & $php -v 2>&1 | Select-Object -First 1
-  if ($LASTEXITCODE -ne 0) { throw "Bundled PHP failed: $phpVersion" }
-  & $InnoSetupCompiler $iss
-  if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed: $LASTEXITCODE" }
-  $exe = Join-Path $root 'output\AcelleMail-Setup-x64.exe'
-  if (-not (Test-Path $exe)) { throw 'Compiler returned success but EXE output was not found.' }
-  Write-Host "Built installer: $exe" -ForegroundColor Green
+  if (-not $ExtractPayload) {
+    if (-not (Test-Path $InnoSetupCompiler)) {
+      $candidates = @(
+        "$env:ProgramFiles(x86)\Inno Setup 6\ISCC.exe",
+        "$env:ProgramFiles\Inno Setup 6\ISCC.exe",
+        "$env:ChocolateyInstall\lib\innosetup\tools\ISCC.exe"
+      )
+      $found = $candidates | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+      if ($found) { $InnoSetupCompiler = $found }
+    }
+    if (-not (Test-Path $InnoSetupCompiler)) { throw "Inno Setup Compiler not found. Checked configured path and standard install locations: $InnoSetupCompiler" }
+    $phpVersion = & $php -v 2>&1 | Select-Object -First 1
+    if ($LASTEXITCODE -ne 0) { throw "Bundled PHP failed: $phpVersion" }
+    & $InnoSetupCompiler $iss
+    if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed: $LASTEXITCODE" }
+    $exe = Join-Path $root 'output\AcelleMail-Setup-x64.exe'
+    if (-not (Test-Path $exe)) { throw 'Compiler returned success but EXE output was not found.' }
+    Write-Host "Built installer: $exe" -ForegroundColor Green
+  } else {
+    Write-Host "Application payload extracted to $appDir; installer compilation deferred to the build step."
+  }
 } finally { Pop-Location }
