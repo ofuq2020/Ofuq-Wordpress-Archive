@@ -1,0 +1,15 @@
+# Generated build/runtime outputs
+staging/
+downloads/
+output/
+*.log
+*.tmp
+*.bak
+
+# Never commit commercial payloads or secrets
+payload/
+.env
+.env.*
+*.key
+*.pem
+secrets/
