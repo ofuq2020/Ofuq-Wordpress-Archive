@@ -1,0 +1,57 @@
+name: Build Acelle Mail Windows Installer
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'AcelleMail-Windows-Installer/**'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set project root
+        shell: pwsh
+        run: |
+          "PROJECT_ROOT=$((Resolve-Path './AcelleMail-Windows-Installer').Path)" >> $env:GITHUB_ENV
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+      - name: Prepare runtime
+        shell: pwsh
+        run: |
+          Set-Location $env:PROJECT_ROOT
+          ./scripts/Prepare-WindowsRuntime.ps1
+      - name: Reassemble uploaded payload chunks
+        shell: pwsh
+        run: |
+          Set-Location $env:PROJECT_ROOT
+          $parts = Join-Path $env:PROJECT_ROOT 'payload\parts'
+          $payload = Join-Path $env:PROJECT_ROOT 'payload'
+          if ((Test-Path $parts) -and (Get-ChildItem -LiteralPath $parts -File -Filter 'AcelleMail.part*' -ErrorAction SilentlyContinue)) {
+            ./scripts/Assemble-AcelleMailPayload.ps1 -PartsDirectory $parts
+          } elseif (Get-ChildItem -LiteralPath $payload -File -Filter 'AcelleMail.part*' -ErrorAction SilentlyContinue) {
+            ./scripts/Assemble-AcelleMailPayload.ps1 -PartsDirectory $payload
+          } else {
+            throw 'No AcelleMail.part* chunks found in payload/parts or payload root.'
+          }
+      - name: Extract application payload
+        shell: pwsh
+        run: |
+          Set-Location $env:PROJECT_ROOT
+          ./scripts/Build-WindowsInstaller.ps1 -ExtractPayload
+      - name: Build installer
+        shell: pwsh
+        run: |
+          Set-Location $env:PROJECT_ROOT
+          ./scripts/Build-WindowsInstaller.ps1
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AcelleMail-Windows-x64
+          path: AcelleMail-Windows-Installer/output/AcelleMail-Setup-x64.exe
+          if-no-files-found: error
+          retention-days: 14
