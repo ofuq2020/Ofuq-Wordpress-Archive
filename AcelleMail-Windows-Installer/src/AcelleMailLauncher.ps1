@@ -14,6 +14,8 @@ $data = Join-Path $baseData 'data'
 $logs = Join-Path $baseData 'logs'
 $dbConfig = Join-Path $baseData 'my.ini'
 $envFile = Join-Path $app '.env'
+# Ensure bundled PHP/MariaDB DLL dependencies can be resolved without modifying system PATH.
+$env:PATH = "$(Split-Path -Parent $php);$(Join-Path (Split-Path -Parent $php) 'ext');$(Join-Path $dbRoot 'bin');$env:PATH"
 New-Item -ItemType Directory -Force -Path $baseData,$data,$logs | Out-Null
 $log = Join-Path $logs 'launcher.log'
 function Log([string]$s) { Add-Content -LiteralPath $log -Value "$(Get-Date -Format s) $s" }
