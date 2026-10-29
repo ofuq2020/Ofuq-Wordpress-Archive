@@ -113,12 +113,16 @@ extension=pdo_sqlite
 [openssl]
 "@
 Set-Content -LiteralPath (Join-Path $phpDir 'php.ini') -Value $phpIni -Encoding ASCII
+$env:PATH = "$phpDir;$extDir;$binDir;$env:PATH"
 $version=& $phpExe -c (Join-Path $phpDir 'php.ini') -v 2>&1
 if ($LASTEXITCODE -ne 0) { throw "Bundled PHP cannot run: $version" }
 $modules=& $phpExe -c (Join-Path $phpDir 'php.ini') -m 2>&1
 if ($LASTEXITCODE -ne 0) { throw 'PHP module enumeration failed.' }
 foreach ($required in @('curl','fileinfo','gd','mbstring','openssl','PDO','pdo_mysql','tokenizer','xml','zip')) {
-  if ($modules -notcontains $required) { throw "Required PHP extension missing: $required" }
+  $moduleText = $modules -join "`n"
+  if ($moduleText -notmatch "(?im)^\s*$([regex]::Escape($required))\s*$") {
+    throw "Required PHP extension missing: $required. PHP module output: $moduleText"
+  }
 }
 Write-Host "PHP validated: $($version | Select-Object -First 1)"
 Write-Host "MariaDB validated: $serverExe"
