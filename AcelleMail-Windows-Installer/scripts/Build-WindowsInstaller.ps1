@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-  [string]$InnoSetupCompiler = "$env:ProgramFiles(x86)\Inno Setup 6\ISCC.exe",
+  [string]$InnoSetupCompiler = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
   [switch]$ExtractPayload,
   [switch]$PrepareRuntime
 )
@@ -46,11 +46,20 @@ try {
   if (-not $ExtractPayload) {
     if (-not (Test-Path $InnoSetupCompiler)) {
       $candidates = @(
-        "$env:ProgramFiles(x86)\Inno Setup 6\ISCC.exe",
+        "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe",
         "$env:ProgramFiles\Inno Setup 6\ISCC.exe",
         "$env:ChocolateyInstall\lib\innosetup\tools\ISCC.exe"
       )
       $found = $candidates | Where-Object { $_ -and (Test-Path $_) } | Select-Object -First 1
+      if (-not $found) {
+        $searchRoots = @($env:ProgramFiles, ${env:ProgramFiles(x86)}, $env:ChocolateyInstall)
+        foreach ($searchRoot in $searchRoots) {
+          if ($searchRoot -and (Test-Path $searchRoot)) {
+            $found = Get-ChildItem -LiteralPath $searchRoot -Filter 'ISCC.exe' -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if ($found) { break }
+          }
+        }
+      }
       if ($found) { $InnoSetupCompiler = $found }
     }
     if (-not (Test-Path $InnoSetupCompiler)) { throw "Inno Setup Compiler not found. Checked configured path and standard install locations: $InnoSetupCompiler" }
