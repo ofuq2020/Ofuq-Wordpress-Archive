@@ -1,36 +1,30 @@
 # Ofuq WordPress Archive
 
-## Overview
-This repository is an archive of WordPress themes, templates, plugins, and related files collected for review, maintenance, repair, and development. A separate `AcelleMail-Windows-Installer/` folder contains public-safe documentation for the OFUQ Acelle Mail Windows installer project.
+المستودع الموحد لقوالب ووردبريس والإضافات والمنتجات الرقمية ومشروعات OFUQ ذات الصلة. يُحفظ كل قالب أو منتج في مجلد مستقل مع توثيقه.
 
-## Purpose
-The goal is to organize and inspect archived WordPress resources, identify compatibility issues and errors, improve code quality, and prepare files for use with modern WordPress installations.
+## الفهرس الرئيسي
 
-## Project organization
-- WordPress archive resources remain in the existing repository structure.
-- `AcelleMail-Windows-Installer/` contains documentation and public-safe project notes for the Windows installer.
-- Do not place Acelle commercial application payloads, private license files, credentials, or secrets in this public repository.
+- [WordPress-Themes/](./WordPress-Themes/) — قوالب ووردبريس، مجلد مستقل لكل قالب.
+- [WordPress-Plugins/](./WordPress-Plugins/) — إضافات ووردبريس، مجلد مستقل لكل إضافة.
+- [Digital-Products/](./Digital-Products/) — المنتجات الرقمية الأخرى، مجلد مستقل لكل منتج.
+- [AcelleMail-Windows-Installer/](./AcelleMail-Windows-Installer/) — ملفات التوثيق والبناء الخاصة بمشروع مثبت Acelle Mail.
 
-## Intended Use
-- Review and analyze WordPress themes and plugins.
-- Identify bugs and compatibility problems.
-- Repair and improve existing code.
-- Update outdated components where appropriate.
-- Evaluate files before using them on a live website.
+## معيار تنظيم كل منتج
 
-## Instructions for AI Tools
-When analyzing this repository:
-1. Inspect the available files and identify their types.
-2. Determine each theme or plugin's purpose and structure.
-3. Identify errors, security risks, and compatibility issues.
-4. Recommend necessary changes before modifying files.
-5. Preserve original files whenever possible.
-6. Do not claim that files have been modified unless the changes have actually been applied.
+لكل قالب أو منتج مجلد مستقل يحتوي، حسب ما ينطبق، على:
+- الملفات الأصلية دون تعديل غير موثق.
+- `README.md` يتضمن الاسم والإصدار والمصدر وطريقة الاستخدام.
+- `CHANGELOG.md` لتوثيق الإصلاحات والتحديثات.
+- الوثائق والصور التوضيحية عند الحاجة.
 
-## Important Notes
-- Files should be tested in a safe development environment before production use.
-- Third-party licenses and usage permissions should be respected.
-- Never include passwords, API keys, or other confidential information.
+## إرشادات العمل
 
-## Maintainer
-Ofuq2020
+1. لا تخلط ملفات المنتجات المختلفة داخل المجلد نفسه.
+2. احتفظ بنسخة من الأصل قبل إجراء إصلاحات.
+3. وثّق أي تعديل ولا تدّعِ نجاح الاختبار دون تنفيذه.
+4. لا ترفع كلمات مرور أو مفاتيح API أو بيانات دخول أو أسرارًا.
+5. افحص الملفات واختبرها في بيئة آمنة قبل استخدامها على موقع فعلي.
+
+## حالة المشروع
+
+هذا المستودع هو نقطة التنظيم الموحدة. وجود ملفات التوثيق أو البناء لا يعني أن المنتج أو مثبت Windows قد اجتاز الاختبار أو أصبح جاهزًا للتوزيع.
