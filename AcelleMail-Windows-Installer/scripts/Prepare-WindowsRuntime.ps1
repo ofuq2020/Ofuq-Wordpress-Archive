@@ -69,6 +69,8 @@ if (-not $init) { throw 'MariaDB database initialization tool is missing.' }
 if (-not (Test-Path (Join-Path $binDir 'mysql.exe')) -and -not (Test-Path (Join-Path $binDir 'mariadb.exe'))) { throw 'MariaDB client is missing.' }
 $extDir=Join-Path $phpDir 'ext'
 if (-not (Test-Path (Join-Path $extDir 'php_pdo_mysql.dll'))) { throw 'PHP archive is missing ext/php_pdo_mysql.dll.' }
+$gdExtension = if (Test-Path (Join-Path $extDir 'php_gd.dll')) { 'gd' } elseif (Test-Path (Join-Path $extDir 'php_gd2.dll')) { 'gd2' } else { throw 'PHP archive contains neither ext/php_gd.dll nor ext/php_gd2.dll.' }
+Write-Host "Using PHP GD extension: $gdExtension"
 $phpIni=@"
 [PHP]
 engine=On
@@ -94,7 +96,7 @@ date.timezone=Asia/Riyadh
 extension_dir="$extDir"
 extension=curl
 extension=fileinfo
-extension=gd
+extension=$gdExtension
 extension=mbstring
 extension=openssl
 extension=pdo_mysql
