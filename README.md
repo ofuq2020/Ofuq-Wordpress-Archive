@@ -1,10 +1,15 @@
 # Ofuq WordPress Archive
 
 ## Overview
-This repository is an archive of WordPress themes, templates, plugins, and related files collected for review, maintenance, repair, and development.
+This repository is an archive of WordPress themes, templates, plugins, and related files collected for review, maintenance, repair, and development. A separate `AcelleMail-Windows-Installer/` folder contains public-safe documentation for the OFUQ Acelle Mail Windows installer project.
 
 ## Purpose
 The goal is to organize and inspect archived WordPress resources, identify compatibility issues and errors, improve code quality, and prepare files for use with modern WordPress installations.
+
+## Project organization
+- WordPress archive resources remain in the existing repository structure.
+- `AcelleMail-Windows-Installer/` contains documentation and public-safe project notes for the Windows installer.
+- Do not place Acelle commercial application payloads, private license files, credentials, or secrets in this public repository.
 
 ## Intended Use
 - Review and analyze WordPress themes and plugins.
